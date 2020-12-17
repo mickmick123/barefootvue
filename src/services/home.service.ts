@@ -16,7 +16,7 @@ class ResponseError extends Error {
 const HomeService = {
     secretArea: async function() {
         try {
-            return ApiService.get("/secret");
+            return ApiService.get("/api/profile");
         } catch (error) {
             throw new ResponseError(
                 error.status,

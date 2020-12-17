@@ -6,7 +6,8 @@ const state = {
     accessToken: TokenService.getToken(),
     authenticationErrorCode: 0,
     authenticationError: "",
-    refreshTokenPromise: null
+    refreshTokenPromise: null,
+    profileData: null
 };
 
 const getters = {
@@ -20,7 +21,7 @@ const getters = {
 
     authenticating: (state: { authenticating: any }) => {
         return state.authenticating;
-    }
+    },
 };
 
 const actions = {
@@ -44,7 +45,7 @@ const actions = {
 
     signOut(context: any) {
         context.commit("signOutRequest");
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             AuthService.signOut();
             resolve();
         });

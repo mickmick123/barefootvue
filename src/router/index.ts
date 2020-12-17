@@ -1,48 +1,37 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
-import Tabs from '../views/Tabs.vue'
-import SignIn from "@/views/Signin.vue";
-import Signup from "@/views/Signup.vue";
+import SignIn from "../views/Login/Login.vue";
+import Account from "../views/Account/Account.vue";
+import Home from '../views/Home.vue'
 import { TokenService } from "@/services/token.service";
+
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/tabs/tab1'
+    redirect: '/home'
   },
   {
-    path: '/tabs/',
-    component: Tabs,
-    children: [
-      {
-        path: '',
-        redirect: 'tab1'
-      },
-      {
-        path: 'tab1',
-        component: () => import('@/views/Tab1.vue')
-      },
-      {
-        path: 'tab2',
-        component: () => import('@/views/Tab2.vue')
-      },
-      {
-        path: 'tab3',
-        component: () => import('@/views/Tab3.vue')
-      }
-    ]
-  },
-  {
-    path: '/login',
-    component: SignIn,
+    path: '/home',
+    name: 'Home',
+    component: Home,
     meta: {
       public: true,
       onlyWhenLoggedOut: true
     }
   },
   {
-    path: '/signup',
-    component: Signup,
+    path: '/account',
+    name: 'Account',
+    component: Account,
+    meta: {
+      public: false,
+      onlyWhenLoggedOut: false
+    }
+  },
+  {
+    path: '/login',
+    component: SignIn,
     meta: {
       public: true,
       onlyWhenLoggedOut: true
@@ -64,13 +53,13 @@ router.beforeEach((to, from, next) => {
 
   if (!isPublic && !loggedIn) {
     return next({
-      path: "/login",
+      path: "/home",
       query: { redirect: to.fullPath }
     });
   }
 
   if (loggedIn && onlyWhenLoggedOut) {
-    return next("/tabs/tab1");
+    return next("/account");
   }
 
   next();

@@ -4,4 +4,6 @@ declare module '*.vue' {
   export default component
 }
 
-declare module 'vuex'
+declare module 'vuex';
+declare module 'mapbox-gl';
+declare module 'vue-mapbox';

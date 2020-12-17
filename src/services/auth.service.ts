@@ -23,23 +23,21 @@ const AuthService = {
                 "Content-Type": "application/x-www-form-urlencoded",
                 Authorization: 'Basic ' + btoa(process.env.VUE_APP_CLIENT_ID + ':' + process.env.VUE_APP_CLIENT_SECRET)
             },
-            url: "/oauth/token",
+            url: "/api/auth/login",
             data: qs.stringify({
                 "grant_type": "password",
                 username: signInData.username,
                 password: signInData.password
             })
         };
-
         try {
             const response = await ApiService.customRequest(requestData);
-            TokenService.saveToken(response.data.access_token);
-            TokenService.saveRefreshToken(response.data.refresh_token);
+            TokenService.saveToken(response.data.token.access_token);
+            TokenService.saveRefreshToken(response.data.token.refresh_token);
             ApiService.setHeader();
 
             ApiService.mount401Interceptor();
-
-            return response.data.access_token;
+            return response.data.token.access_token;
         } catch (error) {
             this.catchError(error);
         }
@@ -54,7 +52,7 @@ const AuthService = {
                 "Content-Type": "application/x-www-form-urlencoded",
                 Authorization: 'Basic ' + btoa(process.env.VUE_APP_CLIENT_ID + ':' + process.env.VUE_APP_CLIENT_SECRET)
             },
-            url: "/oauth/token",
+            url: "/oauth/token/refresh",
             data: qs.stringify({
                 "grant_type": "refresh_token",
                 refreshToken: refreshToken
@@ -64,8 +62,8 @@ const AuthService = {
         try {
             const response = await ApiService.customRequest(requestData);
 
-            TokenService.saveToken(response.data.access_token);
-            TokenService.saveRefreshToken(response.data.refresh_token);
+            TokenService.saveToken(response.data.token.access_token);
+            TokenService.saveRefreshToken(response.data.token.access_token);
             ApiService.setHeader();
 
             return response.data.access_token;
