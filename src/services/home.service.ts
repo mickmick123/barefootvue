@@ -1,4 +1,7 @@
 import ApiService from "./api.service";
+import { Plugins } from '@capacitor/core';
+
+const { Geolocation } = Plugins;
 
 class ResponseError extends Error {
     errorCode: any;
@@ -23,7 +26,20 @@ const HomeService = {
                 error.error.message
             );
         }
-    }
+    },
+   getLocation: async function(){
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          };
+          
+        const coordinates = await Geolocation.getCurrentPosition(options);
+        ApiService.unmount401Interceptor();
+        return {lat: coordinates.coords.latitude, lng: coordinates.coords.longitude};
+    },
 }
+
+
 
 export { HomeService, ResponseError };

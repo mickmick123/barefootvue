@@ -1,7 +1,9 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true">
-      <HereMap :center="center" />
+      <Suspense>
+         <Map/>
+      </Suspense>
       <div id="account-menu">
         <div id="left-menu-button">
           <ion-menu-button menuId="left_menu"></ion-menu-button>
@@ -16,6 +18,7 @@
 </template>
 
 <script lang="ts">
+
 import {
   IonContent,
   IonPage,
@@ -26,9 +29,8 @@ import {
 import { defineComponent } from "vue";
 import { useRouter } from "vue-router";
 import { mapActions } from "vuex";
-import HereMap from "../Map/HereMap.vue";
-import { Plugins } from '@capacitor/core';
-const { Geolocation } = Plugins;
+import Map from "../Map/Map.vue";
+
 export default defineComponent({
   name: "Account",
   components: {
@@ -36,17 +38,15 @@ export default defineComponent({
     IonPage,
     IonImg,
     IonMenuButton,
-    HereMap,
+    Map,
   },
   setup() {
     const router = useRouter();
     const notif = "../../assets/svg/bell.svg";
-    const center = {
-      lat:  0,
-      lng: 0,
-    };
-    return { router, notif, center };
+    
+      return { router, notif };
   },
+
   methods: {
     ...mapActions("home", ["loadSecretArea"]),
     async loadHomeData() {
@@ -54,6 +54,7 @@ export default defineComponent({
         this.msg = res.data;
       });
     },
+   
     ionViewWillEnter() {
       this.loadHomeData();
     },
@@ -61,15 +62,8 @@ export default defineComponent({
       menuController.enable(true, "right_menu");
       menuController.open("right_menu");
     },
-    async getPosition(){
-      const coordinates = await Geolocation.getCurrentPosition();
-      this.center.lat = coordinates.coords.latitude;
-      this.center.lng = coordinates.coords.longitude;
-    }
-  },
-  created() {
-    this.getPosition();
   }
+  
 });
 </script>
 

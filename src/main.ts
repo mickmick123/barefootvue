@@ -26,7 +26,7 @@ import './theme/global.css';
 import ApiService from './services/api.service';
 import { TokenService } from './services/token.service';
 import { store } from './store';
-
+//process.env.VUE_APP_GOOGLEMAPS_KEY
 const app = createApp(App)
     .use(IonicVue)
     .use(router)

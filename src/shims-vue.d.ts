@@ -5,5 +5,3 @@ declare module '*.vue' {
 }
 
 declare module 'vuex';
-declare module 'mapbox-gl';
-declare module 'vue-mapbox';

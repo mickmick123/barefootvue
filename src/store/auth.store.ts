@@ -7,7 +7,7 @@ const state = {
     authenticationErrorCode: 0,
     authenticationError: "",
     refreshTokenPromise: null,
-    profileData: null
+    profileData: null,
 };
 
 const getters = {

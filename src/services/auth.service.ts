@@ -39,6 +39,7 @@ const AuthService = {
             ApiService.mount401Interceptor();
             return response.data.token.access_token;
         } catch (error) {
+            ApiService.mount401Interceptor();
             this.catchError(error);
         }
     },

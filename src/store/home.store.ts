@@ -4,6 +4,7 @@ const state = {
     responseData: "",
     responseErrorCode: 0,
     responseError: "",
+    center: {}
 };
 
 const getters = {
@@ -12,10 +13,17 @@ const getters = {
     },
     responseError: (state: { responseError: any }) => {
         return state.responseError;
-    }
+    },
+    setLocation: (state: { center: any }) => {
+        return state.center;
+    },
 };
 
 const actions = {
+    async getLocation(context: any) {
+            const resp = await HomeService.getLocation();
+            context.commit("setLocation", resp);
+    },
     async loadSecretArea(context: any) {
         context.commit("dataRequest");
         try {
@@ -31,10 +39,16 @@ const actions = {
             }
             return e.message;
         }
-    }
+    },
+   
 };
 
 const mutations = {
+    setLocation(state: {
+        center: any;
+    }, center: any){
+        state.center = center;
+    },
     dataRequest(state: {
         responseError: string;
         responseErrorCode: number;
