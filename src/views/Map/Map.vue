@@ -13,9 +13,12 @@ export default {
    const map = ref(null);
    const mapDivRef = ref(null);
    const center = ref(null);
+   const infoWindow = ref(null);
+   const eventButton = ref(document.createElement('ion-button'));
+   eventButton.value.innerHTML = 'Post an event?';
 
   onMounted(() => {
-    const key = "AIzaSyCYMyigAQ6Kf0Qyb5KDLiQWnZKmk27mijY";
+    const key = process.env.VUE_APP_GOOGLEMAPS_KEY;
     const googleMapScript = document.createElement("SCRIPT");
     googleMapScript.setAttribute(
       "src",
@@ -25,7 +28,7 @@ export default {
     googleMapScript.setAttribute("async", "");
     document.head.appendChild(googleMapScript);
   });
-
+  
   window.initMap = async () => {
     const coordinates = await Geolocation.getCurrentPosition();
     center.value = { lat: coordinates.coords.latitude, lng: coordinates.coords.longitude };
@@ -35,16 +38,47 @@ export default {
         mapType: "roadmap",
         disableDefaultUI: true,
       });
+      
+      infoWindow.value = new window.google.maps.InfoWindow({
+        content: "",
+        position: center.value,
+      });
+
+      map.value.addListener("click", (mapsMouseEvent) => {
+        // Close the current InfoWindow.
+        infoWindow.value.close();
+
+        // Create a new InfoWindow.
+        infoWindow.value = new window.google.maps.InfoWindow({
+          position: mapsMouseEvent.latLng,
+        });
+        
+        infoWindow.value.setContent(
+          map.value.zoom<19 ? 'Please zoom more to post an event.' : eventButton.value
+          //JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+          //'<a href="#">Post an event?</a>'
+        );
+        eventButton.value.addEventListener('click', () => {
+          console.log(JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2));
+        })
+        infoWindow.value.open(map.value);
+      });
   };
   return { mapDivRef };
  },
+ methods:{
+   postEvent(latLng){
+     console.log(latLng);
+   }
+ }
   
 };
 </script>
 <style scoped>
   .map{
     width: 100vw;
-    height: 100vh;
+    height: 93vh;
     background-color: blueviolet;
   }
+ 
 </style>

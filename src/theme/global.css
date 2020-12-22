@@ -1,3 +1,9 @@
+ion-footer {
+  --background-color: transparent;
+}
+.footer-md::before {
+  background-image: unset !important;
+}
 #container {
     text-align: center;
     position: absolute;
@@ -33,7 +39,12 @@
       border-radius: 5px;
       height: 50px;
   }
-  .mapboxgl-ctrl-attrib-inner {
-    display: none !important;
-  }
-  
+  a[href^="http://maps.google.com/maps"]{display:none !important}
+a[href^="https://maps.google.com/maps"]{display:none !important}
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}

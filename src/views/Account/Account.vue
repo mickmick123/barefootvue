@@ -8,12 +8,27 @@
         <div id="left-menu-button">
           <ion-menu-button menuId="left_menu"></ion-menu-button>
         </div>
-        <h4>Pubs and Resto</h4>
+        <h4>{{defaultHeaderText}}</h4>
         <div id="right-menu-button" @click="openNotification">
           <ion-img :src="notif"></ion-img>
         </div>
       </div>
     </ion-content>
+    <ion-footer>
+      <ion-toolbar>
+        <ion-segment scrollable  :value="selectedSegment" @ionChange="segmentChanged($event)">
+          <ion-segment-button value="bars">
+            <ion-icon :src="beer" ></ion-icon>
+          </ion-segment-button>
+          <ion-segment-button value="resto">
+            <ion-icon :src="resto" ></ion-icon>
+          </ion-segment-button>
+          <ion-segment-button value="events">
+            <ion-icon :src="event" ></ion-icon>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-toolbar>
+  </ion-footer>
   </ion-page>
 </template>
 
@@ -25,8 +40,13 @@ import {
   IonImg,
   menuController,
   IonMenuButton,
+  IonSegment,
+  IonSegmentButton,
+  IonIcon,
+  IonFooter,
+  IonToolbar
 } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { mapActions } from "vuex";
 import Map from "../Map/Map.vue";
@@ -39,14 +59,35 @@ export default defineComponent({
     IonImg,
     IonMenuButton,
     Map,
+    IonSegment,
+    IonSegmentButton,
+    IonIcon,
+    IonFooter,
+    IonToolbar
   },
   setup() {
     const router = useRouter();
     const notif = "../../assets/svg/bell.svg";
+    const beer = "../../assets/svg/beer-outline.svg"
+    const resto = "../../assets/svg/restaurant-outline.svg";
+    const event = "../../assets/svg/ticket-outline.svg";
+    const selectedSegment = ref("bars");
+    const defaultHeaderText = ref("Bars and Pubs");
     
-      return { router, notif };
+    const segmentChanged = (ev: CustomEvent) => {
+      if (ev.detail.value == 'resto') {
+        defaultHeaderText.value = 'Restos and Cafes';
+        selectedSegment.value = 'resto';
+      }else if (ev.detail.value == 'bars') {
+        defaultHeaderText.value = 'Bars and Pubs';
+        selectedSegment.value = 'bars';
+      }else {
+        defaultHeaderText.value = 'Events';
+        selectedSegment.value = 'events';
+      }
+    }
+      return { router, notif, beer, resto, event, selectedSegment, defaultHeaderText, segmentChanged };
   },
-
   methods: {
     ...mapActions("home", ["loadSecretArea"]),
     async loadHomeData() {
@@ -54,7 +95,6 @@ export default defineComponent({
         this.msg = res.data;
       });
     },
-   
     ionViewWillEnter() {
       this.loadHomeData();
     },
@@ -68,6 +108,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+ion-toolbar {
+  height: 7vh;
+}
+ion-segment{
+  height: 6.9vh;
+}
 #account-menu {
   height: 50px;
   width: 90vw;
