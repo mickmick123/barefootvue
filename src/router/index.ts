@@ -1,10 +1,6 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
-import SignIn from "../views/Login/Login.vue";
-import Account from "../views/Account/Account.vue";
-import Home from '../views/Home.vue'
-import { TokenService } from "@/services/token.service";
-
+import {store} from '@/store';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -13,8 +9,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/home',
-    name: 'Home',
-    component: Home,
+    name: 'home',
+    component:  () => import("@/views/Home.vue"),
     meta: {
       public: true,
       onlyWhenLoggedOut: true
@@ -22,8 +18,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/account',
-    name: 'Account',
-    component: Account,
+    name: 'account',
+    component: () => import("@/views/Account/Account.vue"),
     meta: {
       public: false,
       onlyWhenLoggedOut: false
@@ -31,7 +27,17 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/login',
-    component: SignIn,
+    name: 'login',
+    component: () => import("@/views/Login/Login.vue"),
+    meta: {
+      public: true,
+      onlyWhenLoggedOut: true
+    }
+  },
+  {
+    path: '/posting',
+    name: 'posting',
+    component: () => import("@/views/Events/Posting.vue"),
     meta: {
       public: true,
       onlyWhenLoggedOut: true
@@ -40,29 +46,17 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes
 })
 
 router.beforeEach((to, from, next) => {
-  const isPublic = to.matched.some(record => record.meta.public);
-  const onlyWhenLoggedOut = to.matched.some(
-      record => record.meta.onlyWhenLoggedOut
-  );
-  const loggedIn = !!TokenService.getToken();
-
-  if (!isPublic && !loggedIn) {
-    return next({
-      path: "/home",
-      query: { redirect: to.fullPath }
-    });
+  if (store.getters['auth/user'] &&  (to.name === 'login' || to.name === 'home')) {
+    next({name : 'account', replace : true})
+  }else if (!store.getters['auth/user'] && (to.name !== 'login' && to.name !== 'home')) {
+    next({name : 'home', replace : true})
+  }  else {
+    next()
   }
-
-  if (loggedIn && onlyWhenLoggedOut) {
-    return next("/account");
-  }
-
-  next();
 });
-
 export default router

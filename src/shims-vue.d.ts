@@ -5,3 +5,5 @@ declare module '*.vue' {
 }
 
 declare module 'vuex';
+declare module 'firebase';
+declare module 'vue-select-image';

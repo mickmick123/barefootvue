@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.starter",
-  "appName": "ionicVueOauth",
+  "appName": "Barefoot",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "dist",

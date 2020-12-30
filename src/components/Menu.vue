@@ -123,11 +123,11 @@ export default defineComponent({
     }
   },
   methods: {
-    ...mapActions("auth", ["signOut"]),
+    ...mapActions("auth", ["logout"]),
     async handleSignOut() {
       menuController.enable(false, 'left_menu');
       menuController.close("left_menu");
-      await this.signOut().then(() => {
+      await this.logout().then(() => {
         this.router.push("/login");
       });
     },

@@ -48,3 +48,23 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 .gmnoprint div {
     background:none !important;
 }
+
+.barefoot-input {
+  border: 1px solid #969696;
+  border-radius: 5px;
+  background-color: #f7f7f7;
+}
+.barefoot-textarea {
+  border: 1px solid #969696;
+  border-radius: 5px;
+  text-align: left;
+  padding: 2px;
+  background-color: #f7f7f7;
+}
+.barefoot-select{
+  border: 1px solid #969696;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #f7f7f7;
+  text-align: left;
+}

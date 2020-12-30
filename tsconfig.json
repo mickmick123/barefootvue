@@ -14,7 +14,8 @@
     "types": [
       "webpack-env",
       "jest",
-      "googlemaps"
+      "googlemaps",
+      "firebase"
     ],
     "paths": {
       "@/*": [

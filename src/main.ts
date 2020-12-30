@@ -19,26 +19,19 @@ import '@ionic/vue/css/text-alignment.css';
 import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
-
 /* Theme variables */
 import './theme/variables.css';
 import './theme/global.css';
-import ApiService from './services/api.service';
-import { TokenService } from './services/token.service';
 import { store } from './store';
+
 //process.env.VUE_APP_GOOGLEMAPS_KEY
+
+//import useFirebaseAuth from "./plugins/firebase-auth";
+
 const app = createApp(App)
     .use(IonicVue)
     .use(router)
     .use(store);
-
-ApiService.init(process.env.VUE_APP_ROOT_API);
-
-if (TokenService.getToken()) {
-  ApiService.setHeader();
-  ApiService.mountRequestInterceptor();
-  ApiService.mount401Interceptor();
-}
   
 router.isReady().then(() => {
   app.mount('#app');

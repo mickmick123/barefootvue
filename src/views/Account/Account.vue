@@ -46,7 +46,7 @@ import {
   IonFooter,
   IonToolbar
 } from "@ionic/vue";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { mapActions } from "vuex";
 import Map from "../Map/Map.vue";
@@ -73,7 +73,7 @@ export default defineComponent({
     const event = "../../assets/svg/ticket-outline.svg";
     const selectedSegment = ref("bars");
     const defaultHeaderText = ref("Bars and Pubs");
-    
+  
     const segmentChanged = (ev: CustomEvent) => {
       if (ev.detail.value == 'resto') {
         defaultHeaderText.value = 'Restos and Cafes';
@@ -86,18 +86,10 @@ export default defineComponent({
         selectedSegment.value = 'events';
       }
     }
+     
       return { router, notif, beer, resto, event, selectedSegment, defaultHeaderText, segmentChanged };
   },
   methods: {
-    ...mapActions("home", ["loadSecretArea"]),
-    async loadHomeData() {
-      await this.loadSecretArea().then((res: any) => {
-        this.msg = res.data;
-      });
-    },
-    ionViewWillEnter() {
-      this.loadHomeData();
-    },
     openNotification() {
       menuController.enable(true, "right_menu");
       menuController.open("right_menu");

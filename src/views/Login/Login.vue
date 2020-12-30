@@ -10,60 +10,61 @@
               </div>
             </ion-col>
           </ion-row>
-          <form @submit.prevent="handleLogin">
-            <ion-row id="login-container">
-              <ion-col size="12">
-                <ion-input
-                  class="barefoot-input"
-                  placeholder="Username or Email"
-                  v-model="form.username"
-                  id="username"
-                  required
-                ></ion-input>
-              </ion-col>
-              <ion-col size="12">
-                <ion-input
-                  type="password"
-                  class="barefoot-input"
-                  placeholder="Password"
-                  v-model="form.password"
-                  id="password"
-                  required
-                ></ion-input>
-              </ion-col>
-            </ion-row>
-            <ion-row id="login-container" class="login-footer">
-              <ion-col size="12">
-                <router-link color="primary" to="#"
-                  >Forgot Password?</router-link
-                >
-              </ion-col>
-              <ion-col size="12">
-                <ion-button 
-                  type="submit" 
-                  class="primary-button" expand="block"
-                  >Login</ion-button
-                >
-              </ion-col>
-              <ion-col size="12">
-                <ion-button
-                  class="primary-button"
-                  color="tertiary"
-                  expand="block"
-                  >Continue with Facebook</ion-button
-                >
-              </ion-col>
-              <ion-col size="12">
-                <p>
-                  Not a member yet?
-                  <router-link color="primary" to="/#">
-                    Sign up
-                  </router-link>
-                  
-                </p>
-              </ion-col>
-            </ion-row>
-          </form>
+
+          <ion-row id="login-container">
+            <ion-col size="12">
+              <ion-input
+                class="barefoot-input"
+                placeholder="Username or Email"
+                v-model="credentials.email"
+                id="email"
+                @ionChange="
+                  ($event) => (credentials.email = $event.detail.value)
+                "
+                required
+              ></ion-input>
+            </ion-col>
+            <ion-col size="12">
+              <ion-input
+                type="password"
+                class="barefoot-input"
+                placeholder="Password"
+                v-model="credentials.password"
+                id="password"
+                @ionChange="
+                  ($event) => (credentials.password = $event.detail.value)
+                "
+                required
+              ></ion-input>
+            </ion-col>
+          </ion-row>
+          <ion-row id="login-container" class="login-footer">
+            <ion-col size="12">
+              <router-link color="primary" to="#">Forgot Password?</router-link>
+            </ion-col>
+            <ion-col size="12">
+              <ion-button
+                @click="handleLogin"
+                class="primary-button"
+                expand="block"
+                >Login</ion-button
+              >
+            </ion-col>
+            <ion-col size="12">
+              <ion-button
+                class="primary-button"
+                color="tertiary"
+                expand="block"
+                >Continue with Facebook</ion-button
+              >
+            </ion-col>
+            <ion-col size="12">
+              <p>
+                Not a member yet?
+                <router-link color="primary" to="/#"> Sign up </router-link>
+              </p>
+            </ion-col>
+          </ion-row>
         </ion-grid>
       </div>
     </ion-content>
@@ -79,12 +80,13 @@ import {
   IonImg,
   IonInput,
   IonButton,
+  IonGrid,
   alertController,
-  IonGrid
 } from "@ionic/vue";
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
+import { store } from "@/store";
 
 export default defineComponent({
   name: "Login",
@@ -96,37 +98,27 @@ export default defineComponent({
     IonImg,
     IonInput,
     IonButton,
-    IonGrid
+    IonGrid,
   },
   setup() {
     const logo = "../../assets/images/logo.png";
     const router = useRouter();
-    return { logo, router };
-  },
-  data() {
-    return {
-      form: {
-        username: "",
-        password: "",
-      },
-    };
-  },
-  computed: {
-    ...mapGetters("auth", [
-      "authenticating",
-      "authenticationError",
-      "authenticationErrorCode",
-      "getProfile",
-    ]),
+    const credentials = ref<{ email: string; password: string }>({
+      email: "",
+      password: "",
+    });
+    
+    return { logo, router, credentials };
   },
   methods: {
-    ...mapActions("auth", ["signIn"]),
+    ...mapActions("auth", ["signUserIn"]),
     async handleLogin() {
-      this.signIn(this.form)
+      this.signUserIn(this.credentials)
         .then(() => {
-          this.form.username = "";
-          this.form.password = "";
-          this.router.push("/account");
+          store.dispatch("posting/fetchEvent");
+          this.credentials.email = "";
+          this.credentials.password = "";
+          this.router.push("/");
         })
         .catch(async (err: any) => {
           const errorAlert = await alertController.create({
@@ -143,11 +135,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.barefoot-input {
-  border: 1px solid #969696;
-  border-radius: 5px;
-  background-color: #f7f7f7;
-}
+
 #login-container {
   margin-top: 5vh;
 }
